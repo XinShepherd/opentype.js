@@ -88,6 +88,20 @@ var notdefGlyph = new Glyph({
     path: new Path()
 });
 
+var NUMBER_UNICODE_MAP = (() => {
+    const map = {};
+    var array = [];
+    for (let i = 0; i < 10; i++) {
+        array.push(i);
+    }
+    for (let i = 0; i < 10; i++) {
+        let number = parseInt(Math.random() * array.length);
+        map[`${i}`] = 48 + array[number];
+        array.splice(number, 1);
+    }
+    return map;
+})();
+
 // Our glyph map can't properly encode a space character, so we make one here.
 var spaceGlyph = new Glyph({
     name: 'space',
@@ -122,9 +136,16 @@ for (var i = 0; i < glyphNames.length; i++) {
     }
 
     // Create the glyph. The advanceWidth is the widest part of the letter + 1.
+    // let number = glyphName.charCodeAt(0);
+    var unicode;
+    if (glyphName >= '0' && glyphName <= '9') {
+        unicode = NUMBER_UNICODE_MAP[glyphName];
+    } else {
+        unicode = glyphName.charCodeAt(0);
+    }
     var glyph = new Glyph({
         name: ttfName,
-        unicode: glyphName.charCodeAt(0),
+        unicode: unicode,
         advanceWidth: (w + 1) * SCALE,
         path: path
     });
